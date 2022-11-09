@@ -98,7 +98,7 @@ func ClientForNetwork(network map[string]AccountID) *Client {
 // Most users will want to set an _Operator account with .SetOperator so
 // transactions can be automatically given TransactionIDs and signed.
 func ClientForMainnet() *Client {
-	return _NewClient(*_NetworkForTestnet(mainnetNodes._ToMap()), mainnetMirror, NetworkNameMainnet, true)
+	return _NewClient(*_NetworkForMainnet(mainnetNodes._ToMap()), mainnetMirror, NetworkNameMainnet, true)
 }
 
 // ClientForTestnet returns a preconfigured client for use with the standard
@@ -141,7 +141,7 @@ func _NewClient(network _Network, mirrorNetwork []string, name NetworkName, netw
 	client.network._SetNetworkName(name)
 
 	if networkUpdate {
-		go client._ScheduleNetworkUpdate(ctx, 0)
+		go client._ScheduleNetworkUpdate(ctx, 2*time.Minute)
 	}
 
 	return &client
