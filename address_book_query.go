@@ -138,7 +138,7 @@ func (query *AddressBookQuery) Execute(client *Client) (NodeAddressBook, error) 
 					if query.attempt < query.maxAttempts {
 						subClient = nil
 
-						delay := math.Min(250.0*math.Pow(2.0, float64(query.attempt)), 30000)
+						delay := math.Min(250.0*math.Pow(2.0, float64(query.attempt)), 8000)
 						time.Sleep(time.Duration(delay) * time.Millisecond)
 						query.attempt++
 					} else {
