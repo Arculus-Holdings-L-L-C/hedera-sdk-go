@@ -110,6 +110,7 @@ func (query *AddressBookQuery) _Build() *mirror.AddressBookQuery {
 func (query *AddressBookQuery) Execute(client *Client) (NodeAddressBook, error) {
 	var cancel func()
 	var ctx context.Context
+	var subClientError error
 
 	err := query._ValidateNetworkOnIDs(client)
 	if err != nil {
@@ -142,12 +143,14 @@ func (query *AddressBookQuery) Execute(client *Client) (NodeAddressBook, error) 
 						time.Sleep(time.Duration(delay) * time.Millisecond)
 						query.attempt++
 					} else {
-						panic(grpcErr.Err())
+						subClientError = grpcErr.Err()
+						break
 					}
 				} else if err == io.EOF {
 					break
 				} else {
-					panic(err)
+					subClientError = err
+					break
 				}
 			}
 
@@ -185,5 +188,5 @@ func (query *AddressBookQuery) Execute(client *Client) (NodeAddressBook, error) 
 
 	return NodeAddressBook{
 		NodeAddresses: result,
-	}, nil
+	}, subClientError
 }
