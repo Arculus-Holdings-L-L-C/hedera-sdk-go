@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/hashgraph/hedera-sdk-go/v2"
+	"github.com/Arculus-Holdings-L-L-C/hedera-sdk-go"
 )
 
 func main() {

@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/hashgraph/hedera-sdk-go/v2"
 	"os"
+
+	"github.com/Arculus-Holdings-L-L-C/hedera-sdk-go"
 )
 
 func main() {
@@ -124,9 +125,9 @@ func main() {
 	}
 
 	transactionResponse, err := tokenCreateTransaction.Sign(key).
-	Sign(firstAccountPrivateKey).
-	Sign(secondAccountPrivateKey).
-	Sign(thirdAccountPrivateKey).Execute(client)
+		Sign(firstAccountPrivateKey).
+		Sign(secondAccountPrivateKey).
+		Sign(thirdAccountPrivateKey).Execute(client)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -144,8 +145,8 @@ func main() {
 	 *
 	 * Collector 0.0.B sends 10_000 units of the token to 0.0.A.
 	 */
-	 
-	 const amount = 10_000
+
+	const amount = 10_000
 	// First we transfer the amount from treasury account to second account
 	treasuryTokenTransferTransaction, err := hedera.NewTransferTransaction().
 		AddTokenTransfer(tokenId, id, -amount).AddTokenTransfer(tokenId, secondAccountId, amount).
@@ -165,7 +166,7 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	
+
 	fmt.Println("Sending from treasury account to the second account - 'TransferTransaction' status: ", treasuryTransferReceipt.Status)
 
 	tokenTransferTx, err := hedera.NewTransferTransaction().
