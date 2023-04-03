@@ -691,7 +691,7 @@ func (transaction *TransferTransaction) Execute(
 
 	transactionID := transaction.transactionIDs._GetCurrent().(TransactionID)
 
-	if !client.GetOperatorAccountID()._IsZero() && client.GetOperatorAccountID()._Equals(*transactionID.AccountID) {
+	if client != nil && !client.GetOperatorAccountID()._IsZero() && client.GetOperatorAccountID()._Equals(*transactionID.AccountID) {
 		transaction.SignWith(
 			client.GetOperatorPublicKey(),
 			client.operator.signer,

@@ -90,7 +90,7 @@ func (id TransactionID) String() string {
 	var returnString string
 	if id.AccountID != nil && id.ValidStart != nil {
 		pb = _TimeToProtobuf(*id.ValidStart)
-		returnString = id.AccountID.String() + "@" + strconv.FormatInt(pb.Seconds, 10) + "." + fmt.Sprint(pb.Nanos)
+		returnString = id.AccountID.String() + "@" + strconv.FormatInt(pb.Seconds, 10) + "." + fmt.Sprintf("%09d", pb.Nanos)
 	}
 
 	if id.scheduled {
