@@ -1,4 +1,4 @@
-module github.com/Arculus-Holdings-L-L-C/hedera-sdk-go
+module github.com/Arculus-Holdings-L-L-C/hedera-sdk-go/v2
 
 go 1.16
 
