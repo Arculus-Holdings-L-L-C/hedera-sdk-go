@@ -34,6 +34,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/keepalive"
 	"google.golang.org/grpc/status"
 )
@@ -132,16 +133,13 @@ func (node *_Node) _GetChannel() (*_Channel, error) {
 
 	var conn *grpc.ClientConn
 	var err error
-	security := grpc.WithInsecure() //nolint
-	if !node.verifyCertificate {
-		println("skipping certificate check")
-	}
+	security := grpc.WithTransportCredentials(insecure.NewCredentials()) //nolint
 	if node._ManagedNode.address._IsTransportSecurity() {
 		security = grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{
 			InsecureSkipVerify: true, // nolint
 			VerifyPeerCertificate: func(rawCerts [][]byte, verifiedChains [][]*x509.Certificate) error {
 				if node.addressBook == nil {
-					logCtx.Warn().Msg("skipping certificate check since no cert hash was found")
+					// logCtx.Warn().Msg("skipping certificate check since no cert hash was found")
 					return nil
 				}
 
