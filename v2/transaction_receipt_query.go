@@ -182,7 +182,7 @@ func (query *TransactionReceiptQuery) GetCost(client *Client) (Hbar, error) {
 
 func _TransactionReceiptQueryShouldRetry(logID string, request interface{}, response interface{}) _ExecutionState {
 	status := Status(response.(*services.Response).GetTransactionGetReceipt().GetHeader().GetNodeTransactionPrecheckCode())
-	logCtx.Trace().Str("requestId", logID).Str("status", status.String()).Msg("receipt precheck status received")
+	// logCtx.Trace().Str("requestId", logID).Str("status", status.String()).Msg("receipt precheck status received")
 
 	switch status {
 	case StatusPlatformTransactionNotCreated, StatusBusy, StatusUnknown, StatusReceiptNotFound, StatusRecordNotFound:
@@ -194,7 +194,7 @@ func _TransactionReceiptQueryShouldRetry(logID string, request interface{}, resp
 	}
 
 	status = Status(response.(*services.Response).GetTransactionGetReceipt().GetReceipt().GetStatus())
-	logCtx.Trace().Str("requestId", logID).Str("status", status.String()).Msg("receipt status received")
+	// logCtx.Trace().Str("requestId", logID).Str("status", status.String()).Msg("receipt status received")
 
 	switch status {
 	case StatusBusy, StatusUnknown, StatusOk, StatusReceiptNotFound, StatusRecordNotFound:

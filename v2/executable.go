@@ -22,7 +22,6 @@ package hedera
 
 import (
 	"context"
-	"encoding/hex"
 	"os"
 	"time"
 
@@ -41,7 +40,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-var logCtx zerolog.Logger
+// var logCtx zerolog.Logger
 
 // A required init function to setup logging at the correct level
 func init() { // nolint
@@ -62,7 +61,7 @@ func init() { // nolint
 		zerolog.SetGlobalLevel(zerolog.Disabled)
 	}
 
-	logCtx = log.With().Str("module", "hedera-sdk-go").Logger()
+	// logCtx = log.With().Str("module", "hedera-sdk-go").Logger()
 }
 
 const maxAttempts = 10
@@ -121,7 +120,7 @@ func _Execute( // nolint
 
 	var attempt int64
 	var errPersistent error
-	var marshaledRequest []byte
+	// var marshaledRequest []byte
 
 	for attempt = int64(0); attempt < int64(maxAttempts); attempt, *currentBackoff = attempt+1, *currentBackoff*2 {
 		var protoRequest interface{}
@@ -138,7 +137,7 @@ func _Execute( // nolint
 				return TransactionResponse{}, ErrInvalidNodeAccountIDSet{nodeAccountID}
 			}
 
-			marshaledRequest, _ = protobuf.Marshal(protoRequest.(*services.Transaction))
+			// marshaledRequest, _ = protobuf.Marshal(protoRequest.(*services.Transaction))
 		} else if query, ok := request.(*Query); ok {
 			if query.nodeAccountIDs.locked && query.nodeAccountIDs._Length() > 0 {
 				protoRequest = makeRequest(request)
@@ -168,21 +167,21 @@ func _Execute( // nolint
 				query.nodeAccountIDs._Set(0, node.accountID)
 				protoRequest = makeRequest(request)
 			}
-			marshaledRequest, _ = protobuf.Marshal(protoRequest.(*services.Query))
+			// marshaledRequest, _ = protobuf.Marshal(protoRequest.(*services.Query))
 		}
 
 		node._InUse()
 
-		logCtx.Trace().Str("requestId", logID).Str("nodeAccountID", node.accountID.String()).Str("nodeIPAddress", node.address._String()).
-			Str("Request Proto:", hex.EncodeToString(marshaledRequest)).Msg("executing")
+		// logCtx.Trace().Str("requestId", logID).Str("nodeAccountID", node.accountID.String()).Str("nodeIPAddress", node.address._String()).
+		// Str("Request Proto:", hex.EncodeToString(marshaledRequest)).Msg("executing")
 
 		if !node._IsHealthy() {
-			logCtx.Trace().Str("requestId", logID).Str("delay", node._Wait().String()).Msg("node is unhealthy, waiting before continuing")
+			// logCtx.Trace().Str("requestId", logID).Str("delay", node._Wait().String()).Msg("node is unhealthy, waiting before continuing")
 			_DelayForAttempt(logID, backOff.NextBackOff(), attempt)
 			continue
 		}
 
-		logCtx.Trace().Str("requestId", logID).Msg("updating node account ID index")
+		// logCtx.Trace().Str("requestId", logID).Msg("updating node account ID index")
 
 		channel, err := node._GetChannel()
 		if err != nil {
@@ -203,18 +202,18 @@ func _Execute( // nolint
 			ctx, cancel = context.WithDeadline(ctx, grpcDeadline)
 		}
 
-		logCtx.Trace().Str("requestId", logID).Msg("executing gRPC call")
+		// logCtx.Trace().Str("requestId", logID).Msg("executing gRPC call")
 
-		var marshaledResponse []byte
+		// var marshaledResponse []byte
 		if method.query != nil {
 			resp, err = method.query(ctx, protoRequest.(*services.Query))
 			if err == nil {
-				marshaledResponse, _ = protobuf.Marshal(resp.(*services.Response))
+				// marshaledResponse, _ = protobuf.Marshal(resp.(*services.Response))
 			}
 		} else {
 			resp, err = method.transaction(ctx, protoRequest.(*services.Transaction))
 			if err == nil {
-				marshaledResponse, _ = protobuf.Marshal(resp.(*services.TransactionResponse))
+				// marshaledResponse, _ = protobuf.Marshal(resp.(*services.TransactionResponse))
 			}
 		}
 
@@ -247,7 +246,7 @@ func _Execute( // nolint
 		case executionStateExpired:
 			if transaction, ok := request.(*Transaction); ok {
 				if !client.GetOperatorAccountID()._IsZero() && transaction.regenerateTransactionID && !transaction.transactionIDs.locked {
-					logCtx.Trace().Str("requestId", logID).Msg("received `TRANSACTION_EXPIRED` with transaction ID regeneration enabled; regenerating")
+					// logCtx.Trace().Str("requestId", logID).Msg("received `TRANSACTION_EXPIRED` with transaction ID regeneration enabled; regenerating")
 					transaction.transactionIDs._Set(transaction.transactionIDs.index, TransactionIDGenerate(client.GetOperatorAccountID()))
 					if err != nil {
 						panic(err)
@@ -266,7 +265,7 @@ func _Execute( // nolint
 
 			return &services.Response{}, mapStatusError(request, resp)
 		case executionStateFinished:
-			logCtx.Trace().Str("Response Proto:", hex.EncodeToString(marshaledResponse)).Msg("finished")
+			// logCtx.Trace().Str("Response Proto:", hex.EncodeToString(marshaledResponse)).Msg("finished")
 
 			return mapResponse(request, resp, node.accountID, protoRequest)
 		}
@@ -284,13 +283,13 @@ func _Execute( // nolint
 }
 
 func _DelayForAttempt(logID string, backoff time.Duration, attempt int64) {
-	logCtx.Trace().Str("requestId", logID).Dur("delay", backoff).Int64("attempt", attempt+1).Msg("retrying request attempt")
+	// logCtx.Trace().Str("requestId", logID).Dur("delay", backoff).Int64("attempt", attempt+1).Msg("retrying request attempt")
 	time.Sleep(backoff)
 }
 
 func _ExecutableDefaultRetryHandler(logID string, err error) bool {
 	code := status.Code(err)
-	logCtx.Trace().Str("requestId", logID).Str("status", code.String()).Msg("received gRPC error with status code")
+	// logCtx.Trace().Str("requestId", logID).Str("status", code.String()).Msg("received gRPC error with status code")
 	switch code {
 	case codes.ResourceExhausted, codes.Unavailable:
 		return true

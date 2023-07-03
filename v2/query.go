@@ -128,7 +128,7 @@ func (this *Query) SetMaxRetry(count int) *Query {
 }
 
 func _QueryShouldRetry(logID string, status Status) _ExecutionState {
-	logCtx.Trace().Str("requestId", logID).Str("status", status.String()).Msg("query precheck status received")
+	// logCtx.Trace().Str("requestId", logID).Str("status", status.String()).Msg("query precheck status received")
 	switch status {
 	case StatusPlatformTransactionNotCreated, StatusPlatformNotActive, StatusBusy:
 		return executionStateRetry
