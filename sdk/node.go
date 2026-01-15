@@ -116,9 +116,9 @@ func (node *_Node) _GetChannel(logger Logger) (*_Channel, error) {
 	}
 
 	var kacp = keepalive.ClientParameters{
-		Time:                10 * time.Second,
-		Timeout:             2 * time.Second,
-		PermitWithoutStream: true,
+		// Time:                10 * time.Second,
+		// Timeout:             2 * time.Second,
+		// PermitWithoutStream: true,
 	}
 
 	var conn *grpc.ClientConn
@@ -133,7 +133,7 @@ func (node *_Node) _GetChannel(logger Logger) (*_Channel, error) {
 			InsecureSkipVerify: true, // nolint
 			VerifyPeerCertificate: func(rawCerts [][]byte, verifiedChains [][]*x509.Certificate) error {
 				if node.addressBook == nil {
-					logger.Warn("skipping certificate check since no cert hash was found")
+					// logger.Warn("skipping certificate check since no cert hash was found")
 					return nil
 				}
 
