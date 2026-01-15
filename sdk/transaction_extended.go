@@ -34,7 +34,6 @@ func CreateTransferTransactionFromBytes(data []byte) (*TransferTransaction, erro
 	fmt.Println("Parse Single transaction...")
 
 	var first *services.TransactionBody = nil
-	var err error
 
 	var signedTransaction services.SignedTransaction
 	if err := protobuf.Unmarshal(data, &signedTransaction); err != nil {
